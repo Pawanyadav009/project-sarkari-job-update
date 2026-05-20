@@ -1,11 +1,196 @@
 <% layout("layouts/boilerplate") %>
-<div>
-    <h1>home route</h1>
-    <div>
-        <% for(post of allposts){%>
-            <ul>
-                <li><a href="/jobs/<%= post._id %>"><%= post.title%></a></li>
-            </ul>
-        <%} %>
-    </div>
+<%
+  const posts = Array.isArray(allposts) ? allposts : [];
+
+  const norm = (s) => String(s || "").trim().toLowerCase();
+  const categoryKey = (c) => {
+    const x = norm(c);
+    if (!x) return "other";
+    if (x.includes("latest")) return "latest_job";
+    if (x.includes("admit")) return "admit_card";
+    if (x.includes("result")) return "result";
+    if (x.includes("answer")) return "answer_key";
+    if (x.includes("offline")) return "offline_form";
+    return x.replace(/\s+/g, "_");
+  };
+
+  const categoryMeta = [
+    { key: "latest_job", label: "Latest Job" },
+    { key: "admit_card", label: "Admit Card" },
+    { key: "result", label: "Result" },
+    { key: "answer_key", label: "Answer Key" },
+    { key: "offline_form", label: "Offline Form" },
+    { key: "other", label: "Other Updates" },
+  ];
+
+  const grouped = posts.reduce((acc, p) => {
+    const key = categoryKey(p?.category);
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(p);
+    return acc;
+  }, {});
+
+  // keep newest first if createdAt exists
+  Object.keys(grouped).forEach((k) => {
+    grouped[k].sort((a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0));
+  });
+
+  const visibleCategories = categoryMeta.filter((c) => Array.isArray(grouped[c.key]) && grouped[c.key].length);
+%>
+
+<style>
+  :root{
+    --borderBlack: #0b0b0b;
+    --lightHeader: #f2f2f2;
+    --linkBlue: #0b56d6;
+    --tileBlue: #0b56d6;
+    --tilePurple: #7b1fa2;
+    --tileGreen: #2e7d32;
+    --tileViolet: #8e24aa;
+    --tileNavy: #1565c0;
+    --tileGrey: #37474f;
+  }
+  .homePageWrapper { padding: 10px 10px 24px; }
+  .homeCenterBox {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #fff;
+    border: 2px solid var(--borderBlack);
+  }
+
+  .sectionTitleBar {
+    background: var(--tileBlue);
+    color: #fff;
+    font-weight: 900;
+    text-align: center;
+    padding: 8px 10px;
+    border-top: 2px solid var(--borderBlack);
+    border-bottom: 2px solid var(--borderBlack);
+    letter-spacing: .2px;
+  }
+  .tilesGrid{
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+    border-bottom: 2px solid var(--borderBlack);
+  }
+  @media (max-width: 992px) { .tilesGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 420px) { .tilesGrid { grid-template-columns: 1fr; } }
+
+  .tileBox{
+    border: 2px solid var(--borderBlack);
+    color: #fff;
+    font-weight: 900;
+    text-align: center;
+    padding: 14px 10px;
+    line-height: 1.2;
+  }
+  .tileBox .totalText{ font-weight: 800; font-size: 12px; display:block; margin-top: 4px; }
+
+  .categoryHeader {
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    padding: 10px 12px;
+    border-top: 2px solid var(--borderBlack);
+    border-bottom: 2px solid var(--borderBlack);
+    letter-spacing: .2px;
+  }
+  .categoryTable { border-color: var(--borderBlack) !important; }
+  .categoryTable td, .categoryTable th {
+    vertical-align: middle;
+    border-color: var(--borderBlack) !important;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  .categoryTable thead th {
+    background: var(--lightHeader) !important;
+    font-weight: 900;
+  }
+  .postLink { text-decoration: none; font-weight: 800; color: var(--linkBlue); }
+  .postLink:hover { text-decoration: underline; color: var(--linkBlue); }
+  .mutedText { color: #6c757d; }
+</style>
+
+<div class="homePageWrapper">
+  <div class="homeCenterBox">
+    <div class="sectionTitleBar">Sarkari Job Update - Category Wise</div>
+
+    <% if (!visibleCategories.length) { %>
+      <div class="p-3">
+        <div class="alert alert-warning mb-0">No posts available yet.</div>
+      </div>
+    <% } else { %>
+      <!-- Category tiles (as per your design) -->
+      <div class="tilesGrid">
+        <% visibleCategories.forEach((c) => { %>
+          <%
+            const bg =
+              c.key === "latest_job" ? "var(--tileBlue)" :
+              c.key === "admit_card" ? "var(--tilePurple)" :
+              c.key === "result" ? "var(--tileGreen)" :
+              c.key === "answer_key" ? "var(--tileViolet)" :
+              c.key === "offline_form" ? "var(--tileNavy)" :
+              "var(--tileGrey)";
+          %>
+          <div class="tileBox" style="background:<%= bg %>">
+            <%= c.label %>
+            <span class="totalText">Total: <%= grouped[c.key].length %></span>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Category wise tables (2 in a row) -->
+      <div class="p-2 p-md-3">
+        <div class="row g-3">
+          <% visibleCategories.forEach((c) => { %>
+            <div class="col-12 col-lg-6">
+              <%
+                const headerBg =
+                  c.key === "latest_job" ? "var(--tileBlue)" :
+                  c.key === "admit_card" ? "var(--tilePurple)" :
+                  c.key === "result" ? "var(--tileGreen)" :
+                  c.key === "answer_key" ? "var(--tileViolet)" :
+                  c.key === "offline_form" ? "var(--tileNavy)" :
+                  "var(--tileGrey)";
+              %>
+              <div id="cat_<%= c.key %>" class="categoryHeader" style="background:<%= headerBg %>">
+                <%= c.label %> (Total: <%= grouped[c.key].length %>)
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-bordered mb-0 categoryTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th style="width:70px;">S.No</th>
+                      <th>Post Title</th>
+                      <th style="width:160px;">Updated</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% grouped[c.key].forEach((p, idx) => { %>
+                      <tr>
+                        <td><%= idx + 1 %></td>
+                        <td>
+                          <a class="postLink" href="/jobs/<%= p._id %>"><%= p.title %></a>
+                        </td>
+                        <td class="mutedText">
+                          <% if (p.createdAt) { %>
+                            <%= new Date(p.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) %>
+                          <% } else { %>
+                            -
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+  </div>
 </div>

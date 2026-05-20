@@ -4,6 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "seed": "node scripts/seed.js",
+    "seed:50": "node scripts/seed.js 50",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
