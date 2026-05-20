@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>⚡Admin Add Job</title>
+</head>
+<body>
+
+<h1>Add New Job (Testing Form)</h1>
+
+<form method="POST" action="/admin">
+
+  <!-- BASIC INFO -->
+  <fieldset>
+    <legend>Basic Information</legend>
+    <label for="title">job title</label>
+    <input type="text" name="Job[title]" placeholder="enter job title"><br><br>
+    <!-- ---------- -->
+    <label for="category">select category</label>
+        <select name="Job[category]">
+          <option value="latest_job">latest job</option>
+          <option value="admit_card">admit card</option>
+          <option value="result">result</option>
+        </select><br><br>
+    <!-- ----------- -->
+    <label for="jobType">job type</label>
+        <select name="Job[jobType]">
+          <option value="central">central</option>
+          <option value="state">state</option>
+        </select><br><br>
+    <!-- ----------- -->
+    <label for="applyMode">job type</label>
+        <select name="Job[applyMode]">
+          <option value="online">online</option>
+          <option value="offline">offline</option>
+        </select><br><br>
+
+        <!--  -->
+        <div class="joblocation">
+    <input type="text" name="Job[jobLocation]" placeholder="add job Location"><button id="addlocationbtn">add more Location</button><br><br>
+  </div><br><br>
+  <!-- ------------ -->
+  <label for="salary">job salery</label>
+  <input type="text" name="Job[salary]">
+  </fieldset><br><br>
+  <!-- ------------ -->
+  
+
+
+
+  <!-- IMPORTANT DATES -->
+  <fieldset>
+    <legend>Important Dates</legend>
+
+    <label>Start Date</label><br>
+    <input type="date" name="Job[importantDates][startDate]"><br><br>
+
+    <label>Last Date</label><br>
+    <input type="date" name="Job[importantDates][lastDate]"><br><br>
+
+    <label>Correction Date</label><br>
+    <input type="date" name="Job[importantDates][correctionDate]"><br><br>
+
+    <label>exam City Date</label><br>
+    <input type="date" name="Job[importantDates][examCityDate]"><br><br>
+
+    <label>Admit Card Date</label><br>
+    <input type="date" name="Job[importantDates][admitCardDate]"><br><br>
+    
+    <label>exam Date</label><br>
+    <input type="date" name="Job[importantDates][examDate]"><br><br>
+
+    <label>result Date</label><br>
+    <input type="date" name="Job[importantDates][resultDate]"><br><br>
+
+  </fieldset><br><br>
+
+  <!-- FEES -->
+  <fieldset>
+    <legend>Application Fees</legend>
+
+    <label>General</label><br>
+    <input type="number" name="Job[applicationFee][general]"><br><br>
+
+    <label>obc</label><br>
+    <input type="number" name="Job[applicationFee][obc]"><br><br>
+
+
+    <label>SC / st</label><br>
+    <input type="number" name="Job[applicationFee][sc]"><br><br>
+
+    <label>ews</label><br>
+    <input type="number" name="Job[applicationFee][ews]"><br><br>
+    
+    <label>female</label><br>
+    <input type="number" name="Job[applicationFee][female]"><br><br>
+    <button id="refundfeeBtn">add refund fees</button><br><br>
+    <div class="refunddiv"><br><br>
+
+    </div>
+  </fieldset><br><br>
+
+  <!-- AGE LIMIT -->
+  <fieldset>
+    <legend>Age Limit</legend>
+
+    <label>Minimum Age</label><br>
+    <input type="number" name="Job[ageLimit][min]"><br><br>
+
+    <label>Maximum Age</label><br>
+    <input type="number" name="Job[ageLimit][max]"><br><br>
+
+    <label>Age As On</label><br>
+    <input type="date" name="Job[ageLimit][asOnDate]"><br><br>
+    <label>Age relaxation</label><br>
+    <input type="date" name="Job[ageLimit][relaxation]"><br><br>
+  </fieldset><br><br>
+<!-- ------------------------------end here for next day -->
+  <!-- VACANCY -->
+  <fieldset>
+    <legend>Vacancy Details</legend>
+
+
+        <label>qualification</label><br>
+    <input type="text" name="Job[posts][qualification]"><br><br>
+        <label>postName</label><br>
+    <input type="text" name="Job[posts][postName]"><br><br>
+        <label>Total Posts</label><br>
+    <input type="number" name="Job[posts][totalVacancy]"><br><br>
+      </fieldset><br><br>
+<!-- --------zone vaccancies---------------------------------------- -->
+<fieldset>
+  <legend>zone wise post/post wise seats</legend>
+  <input type="text"  placeholder="zone name or post name" name="Job[zoneVacancies][0][zone]">
+  <input type="number" placeholder="gen" name="Job[zoneVacancies][0][general]">
+  <input type="number" placeholder="ews" name="Job[zoneVacancies][0][ews]">
+  <input type="number" placeholder="obc" name="Job[zoneVacancies][0][obc]">
+  <input type="number" placeholder="sc" name="Job[zoneVacancies][0][sc]">
+  <input type="number" placeholder="st" name="Job[zoneVacancies][0][st]">
+  <button id="zoneaddbtn">add new zone</button><br><br>
+  <div class="addnewzone"></div><br>
+</fieldset><br><br>
+
+<!-- =================== -->
+<!-- ------------------------------------------------ -->
+
+  <!-- QUALIFICATION -->
+  <fieldset>
+    <legend>selection process</legend>
+    <label for="selectionProcess">enter step for selection : </label>
+    <input type="text" name="Job[selectionProcess]">
+    <button id="addNewStep">add new step</button><br><br>
+    <div class="stepAddDiv"></div>
+      </fieldset><br><br>
+
+  <!-- EXAM DETAILS (OPTIONAL) -->
+  <fieldset><br><br><br>
+    <legend>Exam stages (Optional)</legend>
+
+    <!-- ------------------------------------------------------------- -->
+
+    <label>Negative Marking</label>
+    <select name="Job[examStages][0][negativeMarking]">
+      <option value="" selected disabled>select</option>
+      <option value="true">yes</option>
+      <option value="false">No</option>
+    </select><br><br>
+    <label>Negative Marking numbers</label><br><br>
+    <input type="text" placeholder="enter numbers" name="Job[examStages][0][negativeMarkingvalue]"><br><br>
+    
+    <label>enter exam state name</label>
+    <input type="text" name="Job[examStages][0][name]" placeholder="eg.: shift-1"><br><br>
+    <label >enter exam date</label>
+    <input type="date" name="Job[examStages][0][examDate]"><br><br>
+    <label >enter admit card download date</label>
+    <input type="date" name="Job[examStages][0][admitCardDate]">
+    <br><br>
+    <input type="text" name="Job[examStages][0][answerKeyLink]" placeholder="answer key download link"><br><br>
+    <input type="text" name="Job[examStages][0][resultLink]" placeholder="result download link"><br><br>
+    <input type="text" name="Job[examStages][0][noticePDF]" placeholder="noticePDF download link"><br><br>
+    <!-- HHHHHHHHHHH -->
+    <hr>
+    <div class="newstageadd"></div>
+    <button id="newstagebtn">add new stage</button>
+
+    <br><br>
+
+</fieldset>
+<!-- -------------------------------------------------------------------- -->
+<fieldset><br><br><br>
+    <legend>paper pattern (Optional)</legend>
+
+        <!-- ------------------------------------------------------------- -->
+
+    <label >SUBJECT DETAILS</label><br>
+    <input type="text" name="Job[paperPattern][0][subject]" placeholder="enter subject NAME"><br><br>
+    <input type="text" name="Job[paperPattern][0][questions]" placeholder="enter subject questions"><br><br>
+    <input type="text" name="Job[paperPattern][0][marks]" placeholder="enter subject marks"><br><br>
+    <input type="text" name="Job[paperPattern][0][duration]" placeholder="enter subject duration"><br><br>
+    <hr>
+    <div class="newsubject"></div>
+    <button id="newsubBtn">add new subject</button>
+  <br><br>
+  </fieldset>
+<br><br>
+  <!-- IMPORTANT LINKS -->
+  <fieldset>
+    <legend>Important Links</legend>
+
+    <label>Apply Online</label><br>
+    <input type="url" name="Job[importantLinks][applyOnline]"><br><br>
+
+    <label>Official Website</label><br>
+    <input type="url" name="Job[importantLinks][officialWebsite]"><br><br>
+
+    <label>Notification PDF</label><br>
+    <input type="url" name="Job[importantLinks][notificationPDF]"><br><br>
+
+    <label>Answer Key</label><br>
+    <input type="url" name="Job[importantLinks][answerKeyLink]"><br><br>
+  </fieldset>
+  <br>
+  <button type="submit">Save Job</button>
+
+</form>
+<script src="/js/script.js"></script>
+</body>
+</html>
