@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 //---------requirements-------------------
 const express = require('express')
 const mongoose = require('mongoose');
@@ -46,7 +48,7 @@ passport.serializeUser(Admin.serializeUser());
 passport.deserializeUser(Admin.deserializeUser());
 // ---------------------------------------
 // ------mongodb setup--------------------
-    const mongo_url = "mongodb://127.0.0.1:27017/dhelu"
+    const mongo_url = process.env.MONGO_URL
     main().then(()=>{
         console.log('sucessfully connected')
     })
