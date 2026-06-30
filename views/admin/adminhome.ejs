@@ -17,7 +17,7 @@ const stats = typeof dashboardStats !== 'undefined' && dashboardStats ? dashboar
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="brand">
-            <h2>Hello admin</h2>
+            <h2>Hello <%= currentAdmin?.username || 'Admin' %></h2>
         </div>
 
         <nav>
@@ -37,7 +37,7 @@ const stats = typeof dashboardStats !== 'undefined' && dashboardStats ? dashboar
         <header class="topbar">
             <h1>Dashboard Overview</h1>
             <div class="admin-profile">
-                <div class="avatar">A</div>
+                <div class="avatar"><%= (currentAdmin?.username[0]).toUpperCase() || 'A' %></div>
                 <span><%= currentAdmin?.username || 'Admin' %></span>
                 <form action="/admin/logout" method="POST" class="ms-2">
                     <button class="btn btn-sm btn-outline-light" type="submit">Logout</button>

@@ -253,14 +253,6 @@ app.get('/admin/add',(req,res)=>{
     res.render('admin/newpost.ejs', { formData: {} })
 })
 
-
-
-// app.get('/admin/edit/:id',async(req,res)=>{
-//   const {id} = req.params;
-//   const data = await Job.findById(id);
-//   res.render('admin/updatePost.ejs',{data})
-// })
-
 app.get('/admin/edit/:id',async(req,res)=>{
   const {id} = req.params;
   const data = await Job.findById(id);
