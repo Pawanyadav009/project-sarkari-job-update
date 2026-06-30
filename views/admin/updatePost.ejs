@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin • Update Job</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/AdminCss.css">
+</head>
+<body>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <h2>⚡ AdminPro</h2>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/admin">Dashboard</a></li>
+        <li><a href="/admin/add">+ Add Jobs</a></li>
+        <li><a href="/admin/show" class="active">View Posts</a></li>
+        <li><a href="/">View Website</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="container-fluid">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-success text-white rounded-top-4">
+          <h5 class="mb-0">Update Job</h5>
+        </div>
+
+        <div class="card-body p-4">
+          <%
+            const d = data || {};
+            const imp = d.importantDates || {};
+            const fee = d.applicationFee || {};
+            const refund = fee.refund || {};
+            const age = d.ageLimit || {};
+            const posts = d.posts || {};
+            const z = Array.isArray(d.zoneVacancies) ? d.zoneVacancies : [];
+            const stages = Array.isArray(d.examStages) ? d.examStages : [];
+            const pattern = Array.isArray(d.paperPattern) ? d.paperPattern : [];
+            const steps = Array.isArray(d.selectionProcess) ? d.selectionProcess : [];
+            const links = d.importantLinks || {};
+            const locs = Array.isArray(d.jobLocation) ? d.jobLocation : (d.jobLocation ? [d.jobLocation] : []);
+
+            const dateVal = (x) => {
+              try {
+                if (!x) return "";
+                const dt = new Date(x);
+                if (Number.isNaN(dt.getTime())) return "";
+                return dt.toISOString().slice(0, 10);
+              } catch (e) { return ""; }
+            };
+          %>
+
+          <script>
+            window.__zoneIndexStart = <%= Math.max(1, z.length) %>;
+            window.__stageIndexStart = <%= Math.max(1, stages.length) %>;
+            window.__subjectIndexStart = <%= Math.max(1, pattern.length) %>;
+            window.__stepIndexStart = <%= Math.max(1, steps.length) %>;
+          </script>
+
+          <form method="POST" action="/admin/<%= d._id %>?_method=PUT">
+
+            <!-- ================= BASIC INFO ================= -->
+            <h5 class="section-title">Basic Information</h5>
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <label class="form-label">Job Title</label>
+                <input type="text" name="Job[title]" class="form-control" value="<%= d.title || '' %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Category</label>
+                <select name="Job[category]" class="form-select">
+                  <option value="latest_job" <%= d.category==='latest_job' ? 'selected' : '' %>>Latest Job</option>
+                  <option value="admit_card" <%= d.category==='admit_card' ? 'selected' : '' %>>Admit Card</option>
+                  <option value="result" <%= d.category==='result' ? 'selected' : '' %>>Result</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Job Type</label>
+                <select name="Job[jobType]" class="form-select">
+                  <option value="central" <%= d.jobType==='central' ? 'selected' : '' %>>Central</option>
+                  <option value="state" <%= d.jobType==='state' ? 'selected' : '' %>>State</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Apply Mode</label>
+                <select name="Job[applyMode]" class="form-select">
+                  <option value="online" <%= d.applyMode==='online' ? 'selected' : '' %>>Online</option>
+                  <option value="offline" <%= d.applyMode==='offline' ? 'selected' : '' %>>Offline</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label">Job Location</label>
+                <input type="text" placeholder="enter job Location" name="Job[jobLocation]" class="form-control" value="<%= locs[0] || '' %>">
+              </div>
+
+              <div class="col-md-3 mt-2">
+                <button class="btn btn-success" id="addlocationbtn">Add More Location</button>
+              </div>
+
+              <div class="joblocation row g-3">
+                <% if (locs.length > 1) { %>
+                  <% locs.slice(1).forEach((l) => { %>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Job Location</label>
+                      <input type="text" class="form-control" name="Job[jobLocation]" value="<%= l %>" placeholder="Enter Job Location">
+                    </div>
+                  <% }) %>
+                <% } %>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Salary</label>
+                <input type="text" name="Job[salary]" class="form-control" value="<%= d.salary || '' %>">
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= IMPORTANT DATES ================= -->
+            <h5 class="section-title">Important Dates</h5>
+            <div class="row g-3">
+              <div class="col-md-4"><label class="form-label">Start Date</label>
+                <input type="date" name="Job[importantDates][startDate]" class="form-control" value="<%= dateVal(imp.startDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Last Date</label>
+                <input type="date" name="Job[importantDates][lastDate]" class="form-control" value="<%= dateVal(imp.lastDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Correction Date</label>
+                <input type="date" name="Job[importantDates][correctionDate]" class="form-control" value="<%= dateVal(imp.correctionDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Exam City Date</label>
+                <input type="date" name="Job[importantDates][examCityDate]" class="form-control" value="<%= dateVal(imp.examCityDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Admit Card Date</label>
+                <input type="date" name="Job[importantDates][admitCardDate]" class="form-control" value="<%= dateVal(imp.admitCardDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Exam Date</label>
+                <input type="date" name="Job[importantDates][examDate]" class="form-control" value="<%= dateVal(imp.examDate) %>"></div>
+
+              <div class="col-md-4"><label class="form-label">Result Date</label>
+                <input type="date" name="Job[importantDates][resultDate]" class="form-control" value="<%= dateVal(imp.resultDate) %>"></div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= APPLICATION FEES ================= -->
+            <h5 class="section-title">Application Fees</h5>
+            <div class="row g-3">
+              <div class="col-md-2"><label class="form-label">General</label>
+                <input type="number" name="Job[applicationFee][general]" class="form-control" value="<%= fee.general ?? '' %>"></div>
+              <div class="col-md-2"><label class="form-label">OBC</label>
+                <input type="number" name="Job[applicationFee][obc]" class="form-control" value="<%= fee.obc ?? '' %>"></div>
+              <div class="col-md-2"><label class="form-label">SC</label>
+                <input type="number" name="Job[applicationFee][sc]" class="form-control" value="<%= fee.sc ?? '' %>"></div>
+              <div class="col-md-2"><label class="form-label">ST</label>
+                <input type="number" name="Job[applicationFee][st]" class="form-control" value="<%= fee.st ?? '' %>"></div>
+              <div class="col-md-2"><label class="form-label">EWS</label>
+                <input type="number" name="Job[applicationFee][ews]" class="form-control" value="<%= fee.ews ?? '' %>"></div>
+              <div class="col-md-2"><label class="form-label">Female</label>
+                <input type="number" name="Job[applicationFee][female]" class="form-control" value="<%= fee.female ?? '' %>"></div>
+              <div class="col-12">
+                <button class="btn btn-success" id="refundfeeBtn">Add refund</button>
+              </div>
+            </div>
+
+            <div class="refunddiv row g-3 mt-2">
+              <% if (refund && Object.keys(refund).length) { %>
+                <div class="row g-3 mt-2">
+                  <div class="col-md-2"><input type="number" class="form-control" name="Job[applicationFee][refund][general]" placeholder="General" value="<%= refund.general ?? '' %>"></div>
+                  <div class="col-md-2"><input type="number" class="form-control" name="Job[applicationFee][refund][obc]" placeholder="OBC" value="<%= refund.obc ?? '' %>"></div>
+                  <div class="col-md-2"><input type="number" class="form-control" name="Job[applicationFee][refund][ews]" placeholder="EWS" value="<%= refund.ews ?? '' %>"></div>
+                  <div class="col-md-2"><input type="number" class="form-control" name="Job[applicationFee][refund][sc]" placeholder="SC" value="<%= refund.sc ?? '' %>"></div>
+                  <div class="col-md-2"><input type="number" class="form-control" name="Job[applicationFee][refund][st]" placeholder="ST" value="<%= refund.st ?? '' %>"></div>
+                </div>
+              <% } %>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= AGE LIMIT ================= -->
+            <h5 class="section-title">Age Limit</h5>
+            <div class="row g-3">
+              <div class="col-md-4"><label class="form-label">Minimum Age</label>
+                <input type="number" name="Job[ageLimit][min]" class="form-control" value="<%= age.min ?? '' %>"></div>
+              <div class="col-md-4"><label class="form-label">Maximum Age</label>
+                <input type="number" name="Job[ageLimit][max]" class="form-control" value="<%= age.max ?? '' %>"></div>
+              <div class="col-md-4"><label class="form-label">Age As On</label>
+                <input type="date" name="Job[ageLimit][asOnDate]" class="form-control" value="<%= dateVal(age.asOnDate) %>"></div>
+              <div class="col-md-4"><label class="form-label">Age Relaxation</label>
+                <input type="text" name="Job[ageLimit][relaxation]" class="form-control" value="<%= age.relaxation || '' %>"></div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= VACANCY ================= -->
+            <h5 class="section-title">Vacancy Details</h5>
+            <div class="row g-3">
+              <div class="col-md-4"><label class="form-label">Qualification</label>
+                <input type="text" name="Job[posts][qualification]" class="form-control" value="<%= posts.qualification || '' %>"></div>
+              <div class="col-md-4"><label class="form-label">Post Name</label>
+                <input type="text" name="Job[posts][postName]" class="form-control" value="<%= posts.postName || '' %>"></div>
+              <div class="col-md-4"><label class="form-label">Total Vacancy</label>
+                <input type="number" name="Job[posts][totalVacancy]" class="form-control" value="<%= posts.totalVacancy ?? '' %>"></div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= ZONE WISE VACANCY ================= -->
+            <h5 class="section-title">zone wise post/post wise seats</h5>
+            <div class="row g-3 ">
+              <div class="col-md-2">
+                <input class="form-control" type="text" placeholder="zone/post name" name="Job[zoneVacancies][0][zone]" value="<%= z[0]?.zone || '' %>">
+              </div>
+              <div class="col-md-2">
+                <input type="number" class="form-control" placeholder="gen" name="Job[zoneVacancies][0][general]" value="<%= z[0]?.general ?? '' %>">
+              </div>
+              <div class="col-md-2">
+                <input type="number" class="form-control" placeholder="ews" name="Job[zoneVacancies][0][ews]" value="<%= z[0]?.ews ?? '' %>">
+              </div>
+              <div class="col-md-2">
+                <input type="number" class="form-control" placeholder="obc" name="Job[zoneVacancies][0][obc]" value="<%= z[0]?.obc ?? '' %>">
+              </div>
+              <div class="col-md-1">
+                <input type="number" class="form-control" placeholder="sc" name="Job[zoneVacancies][0][sc]" value="<%= z[0]?.sc ?? '' %>">
+              </div>
+              <div class="col-md-1">
+                <input type="number" class="form-control" placeholder="st" name="Job[zoneVacancies][0][st]" value="<%= z[0]?.st ?? '' %>">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-success" id="zoneaddbtn">add new zone</button>
+              </div>
+            </div>
+            <br>
+            <div class="addnewzone row g-3">
+              <% if (z.length > 1) { %>
+                <% z.slice(1).forEach((zz, idx) => { const zi = idx + 1; %>
+                  <div class="row g-3 border p-3 rounded mt-3">
+                    <div class="col-md-4">
+                      <input type="text" class="form-control" name="Job[zoneVacancies][<%= zi %>][zone]" placeholder="Zone / Post Name" value="<%= zz.zone || '' %>">
+                    </div>
+                    <div class="col-md-2">
+                      <input type="number" class="form-control" name="Job[zoneVacancies][<%= zi %>][general]" placeholder="Gen" value="<%= zz.general ?? '' %>">
+                    </div>
+                    <div class="col-md-2">
+                      <input type="number" class="form-control" name="Job[zoneVacancies][<%= zi %>][ews]" placeholder="EWS" value="<%= zz.ews ?? '' %>">
+                    </div>
+                    <div class="col-md-2">
+                      <input type="number" class="form-control" name="Job[zoneVacancies][<%= zi %>][obc]" placeholder="OBC" value="<%= zz.obc ?? '' %>">
+                    </div>
+                    <div class="col-md-1">
+                      <input type="number" class="form-control" name="Job[zoneVacancies][<%= zi %>][sc]" placeholder="SC" value="<%= zz.sc ?? '' %>">
+                    </div>
+                    <div class="col-md-1">
+                      <input type="number" class="form-control" name="Job[zoneVacancies][<%= zi %>][st]" placeholder="ST" value="<%= zz.st ?? '' %>">
+                    </div>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= selection process ================= -->
+            <h5 class="section-title">selection process</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="enter step for selection" name="Job[selectionProcess]" value="<%= steps[0] || '' %>">
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-success" id="addNewStep">add new step</button>
+              </div>
+            </div>
+            <br>
+            <div class="stepAddDiv row g-3">
+              <% if (steps.length > 1) { %>
+                <% steps.slice(1).forEach((s, idx) => { const si = idx + 1; %>
+                  <div class="row g-3 mt-2 align-items-center">
+                    <div class="col-md-10">
+                      <label class="form-label">Selection Step</label>
+                      <input type="text" class="form-control" name="Job[selectionProcess][<%= si %>]" value="<%= s %>" placeholder="Enter selection step">
+                    </div>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= Exam stages (Optional) ================= -->
+            <h5 class="section-title">Exam stages (Optional)</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Negative Marking</label>
+                <select class="form-select" name="Job[examStages][0][negativeMarking]">
+                  <option value="" disabled <%= !stages[0]?.negativeMarking ? 'selected' : '' %>>Select</option>
+                  <option value="true" <%= stages[0]?.negativeMarking==='true' ? 'selected' : '' %>>Yes</option>
+                  <option value="false" <%= stages[0]?.negativeMarking==='false' ? 'selected' : '' %>>No</option>
+                </select>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Negative Marking Numbers</label>
+                <input type="text" class="form-control" placeholder="Enter numbers" name="Job[examStages][0][negativeMarkingvalue]" value="<%= stages[0]?.negativeMarkingvalue || '' %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Exam Stage Name</label>
+                <input type="text" class="form-control" placeholder="Eg: Shift-1" name="Job[examStages][0][name]" value="<%= stages[0]?.name || '' %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Exam Date</label>
+                <input type="date" class="form-control" name="Job[examStages][0][examDate]" value="<%= dateVal(stages[0]?.examDate) %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Admit Card Download Date</label>
+                <input type="date" class="form-control" name="Job[examStages][0][admitCardDate]" value="<%= dateVal(stages[0]?.admitCardDate) %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Answer Key Link</label>
+                <input type="text" class="form-control" placeholder="Answer key download link" name="Job[examStages][0][answerKeyLink]" value="<%= stages[0]?.answerKeyLink || '' %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Result Link</label>
+                <input type="text" class="form-control" placeholder="Result download link" name="Job[examStages][0][resultLink]" value="<%= stages[0]?.resultLink || '' %>">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Notice PDF Link</label>
+                <input type="text" class="form-control" placeholder="Notice PDF download link" name="Job[examStages][0][noticePDF]" value="<%= stages[0]?.noticePDF || '' %>">
+              </div>
+            </div>
+
+            <br><br>
+            <div class="newstageadd row g-3">
+              <% if (stages.length > 1) { %>
+                <% stages.slice(1).forEach((stg, idx) => { const ei = idx + 1; %>
+                  <div class="card p-3 mt-3 shadow-sm">
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label">Negative Marking</label>
+                        <select class="form-select" name="Job[examStages][<%= ei %>][negativeMarking]">
+                          <option disabled <%= !stg.negativeMarking ? 'selected' : '' %>>Select</option>
+                          <option value="true" <%= stg.negativeMarking==='true' ? 'selected' : '' %>>Yes</option>
+                          <option value="false" <%= stg.negativeMarking==='false' ? 'selected' : '' %>>No</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Negative Marking Value</label>
+                        <input type="text" class="form-control" name="Job[examStages][<%= ei %>][negativeMarkingvalue]" placeholder="Enter numbers" value="<%= stg.negativeMarkingvalue || '' %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Stage Name</label>
+                        <input type="text" class="form-control" name="Job[examStages][<%= ei %>][name]" placeholder="Shift-1" value="<%= stg.name || '' %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Exam Date</label>
+                        <input type="date" class="form-control" name="Job[examStages][<%= ei %>][examDate]" value="<%= dateVal(stg.examDate) %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">Admit Card Date</label>
+                        <input type="date" class="form-control" name="Job[examStages][<%= ei %>][admitCardDate]" value="<%= dateVal(stg.admitCardDate) %>">
+                      </div>
+                      <div class="col-md-6">
+                        <input type="text" class="form-control" name="Job[examStages][<%= ei %>][answerKeyLink]" placeholder="Answer Key Link" value="<%= stg.answerKeyLink || '' %>">
+                      </div>
+                      <div class="col-md-6">
+                        <input type="text" class="form-control" name="Job[examStages][<%= ei %>][resultLink]" placeholder="Result Link" value="<%= stg.resultLink || '' %>">
+                      </div>
+                      <div class="col-md-6">
+                        <input type="text" class="form-control" name="Job[examStages][<%= ei %>][noticePDF]" placeholder="Notice PDF Link" value="<%= stg.noticePDF || '' %>">
+                      </div>
+                    </div>
+                  </div>
+                <% }) %>
+              <% } %>
+            </div>
+            <br>
+            <div class="row g-3">
+              <div class="col-12">
+                <button class="btn btn-success" id="newstagebtn">Add New Stage</button>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= paper pattern (Optional) ================= -->
+            <h5 class="section-title">paper pattern (Optional)</h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Subject Name</label>
+                <input type="text" class="form-control" name="Job[paperPattern][0][subject]" placeholder="Enter Subject Name" value="<%= pattern[0]?.subject || '' %>">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Number of Questions</label>
+                <input type="text" class="form-control" name="Job[paperPattern][0][questions]" placeholder="Enter Subject Questions" value="<%= pattern[0]?.questions ?? '' %>">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Total Marks</label>
+                <input type="text" class="form-control" name="Job[paperPattern][0][marks]" placeholder="Enter Subject Marks" value="<%= pattern[0]?.marks ?? '' %>">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Duration</label>
+                <input type="text" class="form-control" name="Job[paperPattern][0][duration]" placeholder="Enter Subject Duration" value="<%= pattern[0]?.duration || '' %>">
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="row g-3 newsubject">
+                <% if (pattern.length > 1) { %>
+                  <% pattern.slice(1).forEach((pp, idx) => { const pi = idx + 1; %>
+                    <div class="row g-3 border p-3 rounded mt-3">
+                      <div class="col-md-3">
+                        <input type="text" class="form-control" name="Job[paperPattern][<%= pi %>][subject]" placeholder="Subject Name" value="<%= pp.subject || '' %>">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="number" class="form-control" name="Job[paperPattern][<%= pi %>][questions]" placeholder="Questions" value="<%= pp.questions ?? '' %>">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="number" class="form-control" name="Job[paperPattern][<%= pi %>][marks]" placeholder="Marks" value="<%= pp.marks ?? '' %>">
+                      </div>
+                      <div class="col-md-3">
+                        <input type="text" class="form-control" name="Job[paperPattern][<%= pi %>][duration]" placeholder="Duration" value="<%= pp.duration || '' %>">
+                      </div>
+                    </div>
+                  <% }) %>
+                <% } %>
+              </div>
+              <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                  <button class="btn btn-success" id="newsubBtn">add new subject</button>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- ================= IMPORTANT LINKS ================= -->
+            <h5 class="section-title">Important Links</h5>
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">Apply Online</label>
+                <input type="url" name="Job[importantLinks][applyOnline]" class="form-control" value="<%= links.applyOnline || '' %>"></div>
+              <div class="col-md-6"><label class="form-label">Official Website</label>
+                <input type="url" name="Job[importantLinks][officialWebsite]" class="form-control" value="<%= links.officialWebsite || '' %>"></div>
+              <div class="col-md-6"><label class="form-label">Notification PDF</label>
+                <input type="url" name="Job[importantLinks][notificationPDF]" class="form-control" value="<%= links.notificationPDF || '' %>"></div>
+              <div class="col-md-6"><label class="form-label">Answer Key</label>
+                <input type="url" name="Job[importantLinks][answerKeyLink]" class="form-control" value="<%= links.answerKeyLink || '' %>"></div>
+            </div>
+
+            <div class="text-end mt-5">
+              <button type="submit" class="btn btn-success px-5">Update Job</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/script.js"></script>
+</body>
+</html>

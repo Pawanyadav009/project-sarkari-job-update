@@ -5,6 +5,7 @@ const path = require('path')
 const app = express();
 const Job = require('./model/jobModal');
 const { addListener } = require('process');
+const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate')
 //---------requirements-end---------------
 
@@ -14,6 +15,7 @@ app.set('view engine','ejs')
 app.set('views',path.join(__dirname,'/views'))
 app.use(express.static(path.join(__dirname,"public")))
 app.use(express.urlencoded({extended:true}))
+app.use(methodOverride('_method'))
 app.engine('ejs',ejsMate)
 // ---------------------------------------
 // ------mongodb setup--------------------
@@ -89,20 +91,50 @@ app.get('/admin',(req,res)=>{
 app.get('/admin/add',(req,res)=>{
     res.render('admin/newpost.ejs')
 })
+
+
+
+// app.get('/admin/edit/:id',async(req,res)=>{
+//   const {id} = req.params;
+//   const data = await Job.findById(id);
+//   res.render('admin/updatePost.ejs',{data})
+// })
+
+app.get('/admin/edit/:id',async(req,res)=>{
+  const {id} = req.params;
+  const data = await Job.findById(id);
+  res.render('admin/updatePost.ejs',{data})
+})
+
+
+
+
 app.post('/admin',async (req,res)=>{
     
     let newpost = new Job(req.body.Job)
     await newpost.save()
-    console.log(newpost)
+    // console.log(newpost)
     res.redirect('/admin')
 
 })
+
+app.put('/admin/:id', async (req, res) => {
+  const { id } = req.params;
+  await Job.findByIdAndUpdate(id, req.body.Job, { runValidators: true });
+  res.redirect('/admin/show');
+});
 
 app.get('/admin/show',async(req,res)=>{
     allposts = await Job.find({})
     // console.log(allposts)
     res.render('admin/show.ejs', {allposts})
 })
+app.delete('/admin/delete/:id',async(req,res)=>{
+  const {id} = req.params;
+  await Job.findByIdAndDelete(id);
+  res.redirect('/admin/show')
+})
+
 
 // ------setting-up-port------------------
 const port = 5406;

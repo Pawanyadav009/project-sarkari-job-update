@@ -2,9 +2,9 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Open Sans", sans-serif !important;
 }
-
+    
 
 
 body {
@@ -19,7 +19,7 @@ body {
 .header{
     /* height: 20vh; */
     width: 100%;
-    background-color: green;
+    background-color: #1565c0;
 }
 .navbar-links{
     height: 10vh;
@@ -31,4 +31,72 @@ body {
     font-weight: 600;
     text-decoration: underline !important;
     transition-duration: 300ms;
+}
+
+
+
+
+.gridBox{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:2px;
+    border:2px solid black;
+}
+@media(max-width:768px){
+.gridBox{
+    grid-template-columns:1fr;
+}
+}
+.cardBox{
+    border:1px solid black;
+    background:#ececec;
+}
+.cardTitle{
+    background:#005dc9;
+    color:white;
+    font-size:22px;
+    font-weight:700;
+    text-align:center;
+    padding:10px;
+}
+.postArea{
+    padding:10px;
+    min-height:350px;
+}
+.postArea ul{
+    padding-left:25px;
+}
+.postArea li{
+    margin-bottom:8px;
+}
+.postLink{
+    color:#123cff;
+    font-size:18px;
+    font-weight:700;
+    text-decoration:none;
+}
+.postLink:hover{
+    text-decoration:underline;
+}
+.postDate{
+    color:red;
+    font-size:14px;
+    font-weight:700;
+    margin-top:3px;
+}
+.btnWrap{
+    text-align:center;
+    padding:18px;
+}
+.viewBtn{
+    background:#30379b;
+    color:white;
+    padding:12px 28px;
+    border-radius:5px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:bold;
+}
+hr{
+    margin:6px 0;
 }

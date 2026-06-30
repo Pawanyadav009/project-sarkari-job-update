@@ -1,4 +1,3 @@
-
 const addlocationbtn = document.querySelector('#addlocationbtn');
 
 addlocationbtn.addEventListener('click', (e) => {
@@ -57,7 +56,7 @@ refundfeeBtn.addEventListener('click', (e) => {
 
 
 
-let i = 1;
+let i = typeof window !== "undefined" && Number.isFinite(window.__zoneIndexStart) ? window.__zoneIndexStart : 1;
 const zoneaddbtn = document.querySelector('#zoneaddbtn');
 
 zoneaddbtn.addEventListener('click', (e) => {
@@ -99,7 +98,7 @@ zoneaddbtn.addEventListener('click', (e) => {
 
 
 
-let j = 1;
+let j = typeof window !== "undefined" && Number.isFinite(window.__stageIndexStart) ? window.__stageIndexStart : 1;
 const newstagebtn = document.querySelector('#newstagebtn');
 
 newstagebtn.addEventListener('click', (e) => {
@@ -173,7 +172,7 @@ newstagebtn.addEventListener('click', (e) => {
 
 
 
-let k = 1;
+let k = typeof window !== "undefined" && Number.isFinite(window.__subjectIndexStart) ? window.__subjectIndexStart : 1;
 const newsubBtn = document.querySelector('#newsubBtn');
 
 newsubBtn.addEventListener('click', (e) => {
@@ -208,7 +207,7 @@ newsubBtn.addEventListener('click', (e) => {
     k++;
 });
 
-let stepIndex = 1;
+let stepIndex = typeof window !== "undefined" && Number.isFinite(window.__stepIndexStart) ? window.__stepIndexStart : 1;
 
 const addNewStep = document.querySelector('#addNewStep');
 
