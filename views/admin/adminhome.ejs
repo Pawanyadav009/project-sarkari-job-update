@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+<%
+const stats = typeof dashboardStats !== 'undefined' && dashboardStats ? dashboardStats : {};
+%>
 
 <div class="layout">
 
@@ -35,28 +38,39 @@
             <h1>Dashboard Overview</h1>
             <div class="admin-profile">
                 <div class="avatar">A</div>
-                <span>Admin</span>
+                <span><%= currentAdmin?.username || 'Admin' %></span>
+                <form action="/admin/logout" method="POST" class="ms-2">
+                    <button class="btn btn-sm btn-outline-light" type="submit">Logout</button>
+                </form>
             </div>
         </header>
+
+        <% if (success && success.length) { %>
+            <div class="alert alert-success"><%= success[0] %></div>
+        <% } %>
+
+        <% if (error && error.length) { %>
+            <div class="alert alert-danger"><%= error[0] %></div>
+        <% } %>
 
         <!-- Stats Section -->
         <section class="stats">
 
             <div class="stat-card">
                 <h3>Total Jobs</h3>
-                <p>120</p>
-                <span>+12 this week</span>
+                <p><%= stats.totalJobs || 0 %></p>
+                <span>+<%= stats.jobsThisWeek || 0 %> this week</span>
             </div>
 
             <div class="stat-card">
-                <h3>Total Applications</h3>
-                <p>540</p>
-                <span>+30 today</span>
+                <h3>Total Vacancies</h3>
+                <p><%= stats.totalVacancies || 0 %></p>
+                <span>Across all posts</span>
             </div>
 
             <div class="stat-card">
                 <h3>Active Listings</h3>
-                <p>87</p>
+                <p><%= stats.activeListings || 0 %></p>
                 <span>Currently Live</span>
             </div>
 

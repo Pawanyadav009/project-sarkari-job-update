@@ -1,4 +1,180 @@
 <% layout("layouts/boilerplate") %>
-<div>
-    
+
+<%
+  const posts = allposts || [];
+
+  const categories = [
+    { title: "Latest Job", key: "latest" },
+    { title: "Results", key: "result" },
+    { title: "Admit Card", key: "admit" },
+    { title: "Schemes", key: "scheme" },
+    { title: "Offline Jobs", key: "offline" },
+    { title: "Upcoming Jobs", key: "upcoming" },
+    { title: "Scholarship", key: "scholarship" },
+  ];
+
+  const routeSelectedKey = typeof selectedKey !== "undefined" ? selectedKey : "latest";
+  const selectedKeyParam = String(routeSelectedKey || "").toLowerCase() || "latest";
+  const selectedTitle =
+    categories.find((c) => c.key === selectedKeyParam)?.title || "Latest Job";
+
+  // Same logic as Home: category string contains the key
+  function filterPosts(key) {
+    const k = String(key || "").toLowerCase();
+    return posts
+      .filter((post) => String(post.category || "").toLowerCase().includes(k))
+      .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+  }
+
+  const selectedPosts = filterPosts(selectedKeyParam);
+%>
+
+<style>
+  .fullDetailsWrapper {
+    padding: 10px 10px 24px;
+  }
+
+  .headerBox {
+    border: 2px solid black;
+    background: #f2f2f2;
+  }
+
+  .headerTitle {
+    background: #005dc9;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 2px solid black;
+  }
+
+  .filterRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
+  }
+
+  .filterLink {
+    background: #ececec;
+    border: 2px solid black;
+    padding: 10px 14px;
+    font-weight: 800;
+    text-decoration: none;
+    color: #000;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  .filterLink:hover {
+    opacity: 0.95;
+  }
+
+  .filterActive {
+    background: #005dc9;
+    color: #fff;
+  }
+
+  .contentBox {
+    border: 1px solid black;
+    background: #ececec;
+  }
+
+  .contentTitle {
+    background: #005dc9;
+    color: white;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid black;
+  }
+
+  .postArea {
+    padding: 10px;
+    min-height: 350px;
+  }
+
+  .postArea ul {
+    padding-left: 25px;
+  }
+
+  .postArea li {
+    margin-bottom: 10px;
+  }
+
+  .postLink {
+    color: #123cff;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .postLink:hover {
+    text-decoration: underline;
+  }
+
+  .postDate {
+    color: red;
+    font-size: 14px;
+    font-weight: 700;
+    margin-top: 3px;
+  }
+
+  .noPosts {
+    padding: 14px;
+    text-align: center;
+    color: #444;
+    font-weight: 700;
+  }
+
+  hr {
+    margin: 6px 0;
+    border-top: 1px dashed #000;
+  }
+</style>
+
+<!-- <div class="fullDetailsWrapper">
+  <div class="headerBox">
+    <div class="headerTitle">Sarkari Job Update - Full Details</div>
+    <div class="filterRow">
+      <% categories.forEach((c) => { %>
+        <a
+          class="filterLink <%= c.key === selectedKeyParam ? 'filterActive' : '' %>"
+          href="/full-details/<%= c.key %>"
+        >
+          <%= c.title %>
+        </a>
+      <% }) %>
+    </div>
+  </div> -->
+
+  <div class="contentBox mt-3">
+    <div class="contentTitle">
+      <%= selectedTitle %> (Total: <%= selectedPosts.length %>)
+    </div>
+
+    <div class="postArea">
+      <% if (selectedPosts.length) { %>
+        <ul>
+          <% selectedPosts.forEach((post) => { %>
+            <li>
+              <a class="postLink" href="/jobs/<%= post._id %>"><%= post.title %></a>
+              <div class="postDate">
+                Updated :
+                <%= post.createdAt
+                  ? new Date(post.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "2-digit", year: "numeric" })
+                  : "-" %>
+              </div>
+              <hr />
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <div class="noPosts">No posts found for this category.</div>
+      <% } %>
+    </div>
+  </div>
 </div>

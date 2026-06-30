@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin • Add Job</title>
+  <title>Admin • Add Job</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Bootstrap -->
@@ -11,12 +11,15 @@
 
 </head>
 <body>
+<%
+const d = formData || {};
+%>
 
 <!-- <div class="d-flex"> -->
 <div class="layout">
 <aside class="sidebar">
         <div class="brand">
-            <h2>⚡ AdminPro</h2>
+            <h2>Hello admin</h2>
         </div>
 
         <nav>
@@ -25,6 +28,11 @@
                 <li><a href="/admin/add" class="active">+ Add Jobs</a></li>
                 <li><a href="/admin/show">View Posts</a></li>
                 <li><a href="/">View Website</a></li>
+                <li>
+                  <form action="/admin/logout" method="POST" class="mt-3">
+                    <button class="btn btn-sm btn-outline-light w-100" type="submit">Logout</button>
+                  </form>
+                </li>
             </ul>
         </nav>
     </aside>
@@ -41,6 +49,13 @@
 </div>
 
 <div class="card-body p-4">
+<% if (success && success.length) { %>
+  <div class="alert alert-success"><%= success[0] %></div>
+<% } %>
+
+<% if (error && error.length) { %>
+  <div class="alert alert-danger"><%= error[0] %></div>
+<% } %>
 
 <form method="POST" action="/admin">
 
@@ -51,15 +66,15 @@
 
 <div class="col-md-6">
 <label class="form-label">Job Title</label>
-<input type="text" name="Job[title]" class="form-control">
+<input type="text" name="Job[title]" class="form-control" value="<%= d.title || '' %>">
 </div>
 
 <div class="col-md-6">
 <label class="form-label">Category</label>
 <select name="Job[category]" class="form-select">
-<option value="latest_job">Latest Job</option>
-<option value="admit_card">Admit Card</option>
-<option value="result">Result</option>
+<option value="latest_job" <%= d.category === 'latest_job' ? 'selected' : '' %>>Latest Job</option>
+<option value="admit_card" <%= d.category === 'admit_card' ? 'selected' : '' %>>Admit Card</option>
+<option value="result" <%= d.category === 'result' ? 'selected' : '' %>>Result</option>
 </select>
 </div>
 
